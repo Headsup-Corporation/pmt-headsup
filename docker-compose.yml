@@ -5,7 +5,7 @@ volumes:
 
 services:
   sqldb:
-    image: mysql:5.7
+    image: mysql:latest
     container_name: helper-mysql
     volumes:
       - mysql_data:/var/lib/mysql
@@ -23,7 +23,7 @@ services:
       timeout: 10s
       retries: 3
   helper:
-    image: eloufirhatim/helper:latest
+    image: pmt-hcorp/helper:latest
     container_name: helper-server
     environment:
       - DB_CONNECTION=mysql
@@ -38,10 +38,28 @@ services:
       - MAIL_USERNAME=your_username
       - MAIL_PASSWORD=your_password
       - MAIL_ENCRYPTION=tls
+      - BROADCAST_DRIVER=pusher
+      - PUSHER_APP_ID=1932250
+      - PUSHER_APP_KEY=ba05c6630b0fc4bed8eb
+      - PUSHER_APP_SECRET=f2f9a64d2c9580fcb916
+      - PUSHER_HOST=
+      - PUSHER_PORT=443
+      - PUSHER_SCHEME=https
+      - PUSHER_APP_CLUSTER=ap2
+    ports:
+      - 8000:8000
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: pmt-hcorp-phpmyadmin
+    environment:
+      - PMA_HOST=sqldb
+      - PMA_USER=helper
+      - PMA_PASSWORD=helper
+      - PMA_ABSOLUTE_URI=http://localhost:8080
+    ports:
+      - 8080:80
     depends_on:
       - sqldb
     restart: "no"
-    ports:
-      - 8000:8000
     volumes:
       - /etc/localtime:/etc/localtime

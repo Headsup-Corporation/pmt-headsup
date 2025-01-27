@@ -7,7 +7,6 @@
     </a>
 
     <div class="w-full flex md:flex-row flex-col gap-5">
-
         <x-filament::card class="md:w-2/3 w-full flex flex-col gap-5">
             <div class="w-full flex flex-col gap-0">
                 <div class="flex items-center gap-2">

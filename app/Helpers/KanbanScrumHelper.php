@@ -16,6 +16,7 @@ use Filament\Forms\Components\Toggle;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\HtmlString;
+use Illuminate\Support\Facades\Log;
 
 trait KanbanScrumHelper
 {
@@ -90,8 +91,15 @@ trait KanbanScrumHelper
             ->get()
             ->map(function ($item) {
                 $query = Ticket::query();
+                // Apply project-specific filters for tickets
                 if ($this->project) {
                     $query->where('project_id', $this->project->id);
+
+                    // Check the logged-in user's role
+                    if ($this->project->owner_id !== auth()->user()->id) {
+                        // If not the owner, filter tickets by responsible_id
+                        $query->where('responsible_id', auth()->user()->id);
+                    }
                 }
                 $query->where('status_id', $item->id);
                 return [
@@ -112,12 +120,6 @@ trait KanbanScrumHelper
         }
         $query->with(['project', 'owner', 'responsible', 'status', 'type', 'priority', 'epic']);
         $query->where('project_id', $this->project->id);
-        if (sizeof($this->users)) {
-            $query->where(function ($query) {
-                return $query->whereIn('owner_id', $this->users)
-                    ->orWhereIn('responsible_id', $this->users);
-            });
-        }
         if (sizeof($this->types)) {
             $query->whereIn('type_id', $this->types);
         }
@@ -127,16 +129,11 @@ trait KanbanScrumHelper
         if ($this->includeNotAffectedTickets) {
             $query->whereNull('responsible_id');
         }
-        $query->where(function ($query) {
-            return $query->where('owner_id', auth()->user()->id)
-                ->orWhere('responsible_id', auth()->user()->id)
-                ->orWhereHas('project', function ($query) {
-                    return $query->where('owner_id', auth()->user()->id)
-                        ->orWhereHas('users', function ($query) {
-                            return $query->where('users.id', auth()->user()->id);
-                        });
-                });
-        });
+        if ($this->project->owner_id !== auth()->user()->id) {
+            // If the user is not the owner, filter by responsible_id
+            $query->where('responsible_id', auth()->user()->id);
+        }
+
         return $query->get()
             ->map(fn(Ticket $item) => [
                 'id' => $item->id,
@@ -150,7 +147,7 @@ trait KanbanScrumHelper
                 'priority' => $item->priority,
                 'epic' => $item->epic,
                 'relations' => $item->relations,
-                'totalLoggedHours' => $item->totalLoggedSeconds ? $item->totalLoggedHours : null
+                'totalLoggedHours' => $item->totalLoggedSeconds ? $item->totalLoggedHours : null,
             ]);
     }
 
