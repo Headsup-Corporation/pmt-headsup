@@ -226,7 +226,7 @@ if ($this->project->owner_id !== auth()->user()->id) {
         $heading = '<div class="w-full flex flex-col gap-1">';
         $heading .= '<a href="' . route('filament.pages.board') . '"
                             class="text-primary-500 text-xs font-medium hover:underline">';
-        $heading .= __('Back to board screen');
+        $heading .= __('Back to board screen-1');
         $heading .= '</a>';
         $heading .= '<div class="flex flex-col gap-1">';
         $heading .= '<span>' . __('Scrum');
