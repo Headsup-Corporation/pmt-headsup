@@ -26,6 +26,7 @@ services:
     image: pmt-hcorp/helper:latest
     container_name: helper-server
     environment:
+      - APP_NAME="HCorp Projects"
       - DB_CONNECTION=mysql
       - DB_HOST=sqldb
       - DB_PORT=3306
@@ -33,10 +34,10 @@ services:
       - DB_USERNAME=helper
       - DB_PASSWORD=helper
       - MAIL_MAILER=smtp
-      - MAIL_HOST=smtp.mailtrap.io
-      - MAIL_PORT=2525
-      - MAIL_USERNAME=your_username
-      - MAIL_PASSWORD=your_password
+      - MAIL_HOST=smtp.gmail.com
+      - MAIL_PORT=587
+      - MAIL_USERNAME=tech@headsupcorporation.com
+      - MAIL_PASSWORD=jjscktfmiwbkuvzx
       - MAIL_ENCRYPTION=tls
       - BROADCAST_DRIVER=pusher
       - PUSHER_APP_ID=1932250
