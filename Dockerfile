@@ -6,7 +6,7 @@ FROM node:16.17.0-bullseye-slim
 # Any working directory can be chosen as per choice like '/' or '/home' etc
 WORKDIR /app
 
-COPY .env.example .env
+#COPY .env.example .env
 
 COPY . .
 
@@ -22,6 +22,7 @@ RUN apt-get update -y && \
     composer install && \
     npm install && \
     php artisan key:generate && \
+    php artisan storage:link && \
     rm -rf /var/lib/apt/lists/*
 
 CMD [ "bash", "./run.sh"]
