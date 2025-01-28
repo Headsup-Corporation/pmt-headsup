@@ -95,11 +95,16 @@ trait KanbanScrumHelper
                 if ($this->project) {
                     $query->where('project_id', $this->project->id);
 
-                    // Check the logged-in user's role
-                    if ($this->project->owner_id !== auth()->user()->id) {
-                        // If not the owner, filter tickets by responsible_id
-                        $query->where('responsible_id', auth()->user()->id);
+                    $isSuperAdmin = auth()->user()->roles()->where('name', 'Super Admin')->exists();
+                    if($isSuperAdmin){}
+                    else{
+// Check the logged-in user's role
+if ($this->project->owner_id !== auth()->user()->id) {
+    // If not the owner, filter tickets by responsible_id
+    $query->where('responsible_id', auth()->user()->id);
+}
                     }
+                    
                 }
                 $query->where('status_id', $item->id);
                 return [
@@ -129,9 +134,13 @@ trait KanbanScrumHelper
         if ($this->includeNotAffectedTickets) {
             $query->whereNull('responsible_id');
         }
-        if ($this->project->owner_id !== auth()->user()->id) {
-            // If the user is not the owner, filter by responsible_id
-            $query->where('responsible_id', auth()->user()->id);
+        $isSuperAdmin = auth()->user()->roles()->where('name', 'Super Admin')->exists();
+        if($isSuperAdmin){}
+        else{
+            if ($this->project->owner_id !== auth()->user()->id) {
+                // If the user is not the owner, filter by responsible_id
+                $query->where('responsible_id', auth()->user()->id);
+            }    
         }
 
         return $query->get()
