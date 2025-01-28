@@ -48,7 +48,7 @@ services:
       - PUSHER_SCHEME=https
       - PUSHER_APP_CLUSTER=ap2
     ports:
-      - 8000:8000
+      - 80:8000
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
     container_name: pmt-hcorp-phpmyadmin
