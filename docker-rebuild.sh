@@ -9,4 +9,4 @@ docker build --no-cache -t pmt-hcorp/helper:latest .
 
 # Step 2: Bring up the Docker Compose services
 echo "Starting Docker Compose services..."
-docker compose up
+docker compose up -d

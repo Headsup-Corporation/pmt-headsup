@@ -36,3 +36,8 @@ Route::name('oidc.')
         Route::get('redirect', [OidcAuthController::class, 'redirect'])->name('redirect');
         Route::get('callback', [OidcAuthController::class, 'callback'])->name('callback');
     });
+
+Route::get('/test-log', function () {
+    Log::info('This is a test log');
+    return 'Test log written!';
+});
